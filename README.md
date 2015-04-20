@@ -6,10 +6,18 @@
 
 Pull this image with `docker pull masm/inotify-signal-container`.
 
-## Usage example
+## Usage
+
+You need to bind mount `/var/run/docker.sock` as shown in the example below.
+You also need to pass at least three arguments (in order):
+* the target container id or name;
+* the signal to send to the target container;
+* one or more files or folders to watch for changes.
+
+### Example
 
 You want to reload Nginx when configuration changes.
-You keep the configuration in a volume container with name `nginx-conf-volume`, at `/nginx-conf.d/`.
+You keep the configuration in a volume container with name `nginx-conf-volume`, at `/nginx-conf.d`.
 Nginx container is `nginx-server` and you have some other container updating the configuration files.
 
 To reload Nginx when configuration changes:
@@ -20,14 +28,6 @@ docker run \
        --volumes-from nginx-conf-volume \
        masm/inotify-signal-container nginx-server SIGHUP /nginx-conf.d
 ```
-
-## Usage
-
-You need to bind mount `/var/run/docker.sock` as shown in the example.
-You also need to pass at least three arguments (in order):
-* the target container id or name;
-* the signal to send to the target container;
-* one or more files or folders to watch for changes.
 
 ## License
 

@@ -22,6 +22,21 @@ fi
 shift
 shift
 
-while inotifywait -e modify "$@"; do
-    echo -e "POST /containers/$CONTAINER_ID/kill?signal=$SIGNAL HTTP/1.1\n" | ncat -U /var/run/docker.sock || exit 1
-done
+NEXT=0
+
+function setup {
+    NEXT=$(( NEXT + 1 ))
+    echo $NEXT > /tmp/next
+    (
+        sleep 1
+        if [ `cat /tmp/next` = $NEXT ]; then
+            echo -e "POST /containers/$CONTAINER_ID/kill?signal=$SIGNAL HTTP/1.1\n" | ncat -U /var/run/docker.sock
+        fi
+    ) &
+}
+
+inotifywait --event modify --monitor "$@" | \
+    while read -r change; do
+        echo "$change"
+        setup
+    done
