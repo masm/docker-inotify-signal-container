@@ -35,6 +35,8 @@ function setup {
     ) &
 }
 
+setup
+
 inotifywait --event modify --monitor "$@" | \
     while read -r change; do
         echo "$change"
