@@ -30,7 +30,7 @@ function setup {
     (
         sleep 1
         if [ `cat /tmp/next` = $NEXT ]; then
-            echo -e "POST /containers/$CONTAINER_ID/kill?signal=$SIGNAL HTTP/1.1\n" | ncat -U /var/run/docker.sock
+            echo -e "POST /containers/$CONTAINER_ID/kill?signal=$SIGNAL HTTP/1.1\nHost: docker.sock\n" | ncat -U /var/run/docker.sock
         fi
     ) &
 }
